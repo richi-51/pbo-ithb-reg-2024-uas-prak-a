@@ -1,4 +1,4 @@
-package Model.Class;
+package src.Model.Class;
 
 public class Customer {
     private int id_customer;

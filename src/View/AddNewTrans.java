@@ -1,24 +1,18 @@
-package View;
+package src.View;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Model.Class.Db.DatabaseHandler;
-
+import src.Controller.AddTransController;
 public class AddNewTrans extends JFrame{
 
     public AddNewTrans(){
@@ -50,26 +44,15 @@ public class AddNewTrans extends JFrame{
         dataTrans.add(beratPaketField);
 
         dataTrans.add(new JLabel("Tipe Paket: "));
-        JComboBox<String> tipePaket = new JComboBox<>(); // tambah datanya !!!
-
+        JComboBox<String> tipePaket = new JComboBox<>(new AddTransController().getCategoryPackage());
+        dataTrans.add(tipePaket);
         
-        JPanel panelButton = new JPanel(new GridLayout(1,2,15,15));
+        JPanel panelButton = new JPanel(new GridLayout(1,3,15,15));
         JButton simpanButton = new JButton("Simpan");
-        simpanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Ubah nilai dari datePicker ke String
-                Date validDari = (Date) ((UtilDateModel) (validFromPckrAdd.getModel())).getValue();
-                String formattedValidDari = formatDate(validDari, "yyyy-MM-dd");
-
-                Date validSampai = (Date) ((UtilDateModel) (validToPckrAdd.getModel())).getValue();
-                String formattedValidSampai = formatDate(validSampai, "yyyy-MM-dd");
-
-                // Panggil fungsi updateVoucher
-                new VoucherController().addVoucher(SingletonManger.getInstance().getLoggedInUser().getIdUser(), namaField.getText(), alamatField.getText(), Double.parseDouble(noTlpField.getText()), java.sql.Date.valueOf(formattedValidDari), java.sql.Date.valueOf(formattedValidSampai));
-                dispose();
-
-            }
+        simpanButton.addActionListener(e-> {
+            new AddTransController().checkInputAndInsert(namaField.getText(), alamatField.getText(), noTlpField.getText(), beratPaketField.getText(), tipePaket.getSelectedItem().toString());
+            dispose();
+        
         });
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e-> {
@@ -77,8 +60,15 @@ public class AddNewTrans extends JFrame{
             new MainMenu();
         });
 
+        JButton addDetailTransButton = new JButton("Add Detail Transaction"); // penambahan button add detail transaction disini dikarenakan di dalam soal tidak diberi tahu harus ditambahkan dimana.
+        addDetailTransButton.addActionListener(e-> {
+            dispose();
+            new DetailTrans();
+        });
+
         panelButton.add(backButton);
         panelButton.add(simpanButton);
+        panelButton.add(addDetailTransButton);
 
 
         add(dataTrans, BorderLayout.CENTER);

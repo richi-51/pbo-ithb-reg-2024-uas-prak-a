@@ -1,4 +1,4 @@
-package View;
+package src.View;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -53,21 +53,21 @@ public class LoginForm extends JFrame {
     private JButton loginButton;
     private JButton backButton;
 
-    private String profilePic = "D:/Perkuliahan/File kuliah Semester 3/PBO/UAS_Prak PBO/pbo-ithb-reg-2024-uas-prak-a/Asset/Capture-4.webp";
+    private String profilePic = "D:/Perkuliahan/File kuliah Semester 3/PBO/UAS_Prak PBO/pbo-ithb-reg-2024-uas-prak-a/src/Asset/imageLogo.jpg";
     private JLabel greetLabel, profileLabel;
     private JPanel profilePanel;
 
     // Constructor
     public LoginForm() {
         setTitle("Login");
-        setSize(350, 250);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(350, 350);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
         // Wadah Foto dan Sapaan
         profilePanel = new JPanel(new BorderLayout());
-        profilePanel.setSize(getWidth() - 30, ((int) ((getHeight()-35))));
+        profilePanel.setSize(25, 35);
 
         // Bagian Foto
         profileLabel = new CircularImageLabel(profilePic);
@@ -113,7 +113,6 @@ public class LoginForm extends JFrame {
         add(profilePanel, BorderLayout.NORTH);
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-
 
         SwingUtilities.invokeLater(this::tampilkanGambar);
     }

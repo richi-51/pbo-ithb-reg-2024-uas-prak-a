@@ -1,23 +1,25 @@
-package Controller;
+package src.Controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import Model.Class.Db.DatabaseHandler;
-import View.MainMenu;
+import src.Model.Class.Db.DatabaseHandler;
+import src.Model.Class.Singleton.SingletonManger;
+import src.View.MainMenu;
 
 public class AddTransController {
     public String[] getCategoryPackage() {
         try (Connection conn = DatabaseHandler.connect()) {
             ArrayList<String> results = new ArrayList<>();
-            String query = "SELECT * FROM categoryPackage";
+            String query = "SELECT * FROM categorypackage";
 
-            var preparedStmtVehicle = conn.prepareStatement(query);
+            var preparedStmt = conn.prepareStatement(query);
 
-            var resultCategory = preparedStmtVehicle.executeQuery();
+            var resultCategory = preparedStmt.executeQuery();
 
             while (resultCategory.next()) {
                 results.add(resultCategory.getString("category"));
@@ -48,7 +50,7 @@ public class AddTransController {
 
         if (!beratPaket.equalsIgnoreCase("0")) {
             try {
-                berat = Integer.parseInt(beratPaket);
+                berat = Double.parseDouble(beratPaket);
                 if (berat > 0 && berat < 1) {
                     berat = 1;
                 }else{
@@ -62,6 +64,7 @@ public class AddTransController {
                 }
 
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 JOptionPane.showMessageDialog(null, "Maaf input berat paket harus angka!", "Error Message", JOptionPane.ERROR_MESSAGE);
             }
         }else{
@@ -69,43 +72,34 @@ public class AddTransController {
         }
 
         try (Connection conn = DatabaseHandler.connect()) {
-            String queryCheck = "INSERT INTO transaction (customer_id, beratPaket, tipePaket, total_cost, created_at, receipt_name, receipt_address, receipt_phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String queryCheck = "INSERT INTO transaction (id, customer_id, package_type, package_weight, total_cost, created_at, receipt_name, receipt_address, receipt_phone) VALUES (?, ?, ?, ?, ?, CURRENT_DATE(), ?, ?, ?)";
             
+            Random rd = new Random();
+            String idTrans = "PER-TX" + rd.nextInt(4);
 
-            var preparedStatementCheck = conn.prepareStatement(queryCheck);
-            preparedStatementCheck.setString(1, email);
+            var preparedStatementInsert = conn.prepareStatement(queryCheck);
+            preparedStatementInsert.setString(1, idTrans);
+            preparedStatementInsert.setInt(2, SingletonManger.getInstance().getLoggedInUser().getId_customer());
+            preparedStatementInsert.setString(3, tipePaket);
+            preparedStatementInsert.setDouble(4, Double.parseDouble(beratPaket));
+            preparedStatementInsert.setInt(5, (int)(berat));
+            preparedStatementInsert.setString(6, nama);
+            preparedStatementInsert.setString(7, alamat);
+            preparedStatementInsert.setString(8, noTlp);
 
-            int rows = preparedStatementCheck.executeUpdate();
+            int rows = preparedStatementInsert.executeUpdate();
 
             if (rows > 0) {
-                String queryInsert = "INSERT INTO Customer (name, alamat, noTlp, email, password) VALUES (?, ?, ?, ?, ?)";
-
-                var preparedStatementInsert = conn.prepareStatement(queryInsert);
-                preparedStatementInsert.setString(1, name);
-                preparedStatementInsert.setString(2, address);
-                preparedStatementInsert.setString(3, phone);
-                preparedStatementInsert.setString(4, email);
-                preparedStatementInsert.setString(5, password);
-
-                int rowAffected = preparedStatementInsert.executeUpdate();
-
-                if (rowAffected > 0) {
-                    JOptionPane.showMessageDialog(registerView, "Data berhasil disimpan!", "Information Message",
-                            JOptionPane.INFORMATION_MESSAGE);
-
-                    registerView.dispose();
-
-                    new MainMenu();
-
-                }
-
+                JOptionPane.showMessageDialog(null, "Data berhasil disimpan!", "Information Message", JOptionPane.INFORMATION_MESSAGE);
+                new MainMenu();
+                
             } else {
-                JOptionPane.showMessageDialog(registerView, "Maaf email atau nomor telepon sudah digunakan!",
+                JOptionPane.showMessageDialog(null, "Data gagal disimpan!",
                         "Error Message", JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(registerView, "Database error: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
         }
     }
 

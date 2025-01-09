@@ -1,4 +1,4 @@
-package Controller;
+package src.Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,8 +7,11 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import Model.Class.Db.DatabaseHandler;
-import View.LoginForm;
+import src.Model.Class.Customer;
+import src.Model.Class.Db.DatabaseHandler;
+import src.Model.Class.Singleton.SingletonManger;
+import src.View.LoginForm;
+import src.View.MainMenu;
 
 public class LogInController {
     private LoginForm loginView;
@@ -19,7 +22,7 @@ public class LogInController {
 
     public LogInController(LoginForm loginView) {
         this.loginView = loginView;
-
+        
         this.loginView.addLoginListener(new LoginAction());
     }
 
@@ -39,7 +42,7 @@ public class LogInController {
             String noTlp = loginView.getNoTlp();
 
             try (Connection conn = DatabaseHandler.connect()) {
-                String queryUser = "SELECT * FROM Customer c WHERE password = ? AND noTlp = ?";
+                String queryUser = "SELECT * FROM Customer c WHERE password = ? AND phone = ?";
 
                 // Periksa apakah user ada di tabel Users
                 var preparedStatement = conn.prepareStatement(queryUser);
@@ -48,11 +51,15 @@ public class LogInController {
 
                 var resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
+                    SingletonManger.getInstance().setLoggedInUser(new Customer(resultSet.getInt("id"), resultSet.getString("password"), resultSet.getString("name"), resultSet.getString("address"), resultSet.getString("phone"), resultSet.getString("email")));
+
+                    
                     JOptionPane.showMessageDialog(loginView, "LogIn Successfull", "LogIn Success",
                             JOptionPane.INFORMATION_MESSAGE);
 
                     // Close LogIn window
                     loginView.dispose();
+                    new MainMenu();
                 } else {
                     JOptionPane.showMessageDialog(loginView, "Invalid No. Telepon or password!");
                 }

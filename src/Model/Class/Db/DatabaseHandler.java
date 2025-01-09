@@ -1,4 +1,4 @@
-package Model.Class.Db;
+package src.Model.Class.Db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseHandler {
     // URL, Username, dan Password Database
-    private static final String URL = "jdbc:mysql://localhost:3306/grab_hb_tubes";
+    private static final String URL = "jdbc:mysql://localhost:3306/db_uas_1123051";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 

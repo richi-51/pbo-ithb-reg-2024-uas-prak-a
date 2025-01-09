@@ -1,8 +1,8 @@
-package Model.Class;
+package src.Model.Class;
 
 import java.util.Date;
 
-import Model.Enum.Status;
+import src.Model.Enum.Status;
 
 public class ShipmentDetails {
     private int id_shipment, trans_id;

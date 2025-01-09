@@ -1,4 +1,4 @@
-package Model.Class.Db;
+package src.Model.Class;
 
 import java.util.Date;
 

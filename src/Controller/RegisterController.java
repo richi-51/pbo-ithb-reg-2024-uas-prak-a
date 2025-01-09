@@ -1,4 +1,4 @@
-package Controller;
+package src.Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import Model.Class.Db.DatabaseHandler;
-import View.MainMenu;
-import View.RegisterForm;
+import src.Model.Class.Db.DatabaseHandler;
+import src.View.MainMenu;
+import src.View.RegisterForm;
 
 public class RegisterController {
     private RegisterForm registerView;
@@ -37,18 +37,18 @@ public class RegisterController {
 
             
             try (Connection conn = DatabaseHandler.connect()) {
-                String queryCheck = "SELECT * FROM Customer WHERE email = ? OR noTlp = ?";
-                // String queryCheck = "INSERT INTO Customer (plateNumber, vehicleName, vehicleType, jumlahSeat) VALUES (?, ?, ?, ?)";
+                String queryCheck = "SELECT * FROM Customer WHERE email = ? OR phone = ?";
 
                 var preparedStatementCheck = conn.prepareStatement(queryCheck);
                 preparedStatementCheck.setString(1, email);
+                preparedStatementCheck.setString(2, phone);
 
-                int rows = preparedStatementCheck.executeUpdate();
+                var rs = preparedStatementCheck.executeQuery();
 
                
 
-                if (rows > 0) {
-                    String queryInsert = "INSERT INTO Customer (name, alamat, noTlp, email, password) VALUES (?, ?, ?, ?, ?)";
+                if (!rs.next()) {
+                    String queryInsert = "INSERT INTO Customer (name, address, phone, email, password) VALUES (?, ?, ?, ?, ?)";
 
                     var preparedStatementInsert = conn.prepareStatement(queryInsert);
                     preparedStatementInsert.setString(1, name);

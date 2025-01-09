@@ -1,6 +1,6 @@
-package Model.Class.Singleton;
+package src.Model.Class.Singleton;
 
-import Model.Class.Customer;
+import src.Model.Class.Customer;
 
 public class SingletonManger {
     private static SingletonManger instance;

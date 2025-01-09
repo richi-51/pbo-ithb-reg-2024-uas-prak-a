@@ -1,4 +1,4 @@
-package View;
+package src.View;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ public class RegisterForm extends JFrame {
     public RegisterForm() {
         setTitle("Register");
         setSize(400, 400);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
@@ -57,7 +57,7 @@ public class RegisterForm extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
 
-        setVisible(true);
+        // setVisible(true);
 
     }
 
